@@ -1,0 +1,50 @@
+name: Run Bug Repo
+
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash -el {0}
+
+jobs:
+  run-test:
+    name: Run test on ${{matrix.platform}}
+    runs-on: ${{matrix.platform}}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          # apple silicon
+          - macos-latest
+          # windows & ubuntu are fine
+          - windows-latest
+          - ubuntu-latest
+          # apple intel
+          - macos-13
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 👢 Set up Conda environment
+        uses: mamba-org/setup-micromamba@v1
+        id: setup
+        with:
+          environment-file: environment.yml
+          environment-name: torch-repro
+          cache-environment: true
+          init-shell: bash
+
+      - name: Inspect environment
+        run: |
+          python -VV
+          pip list
+
+      - name: Run test
+        run: |
+          python -m pytest
