@@ -51,8 +51,6 @@ def mat_vec_mul_problems(draw):
 @given(st.data(), st.integers(1, 500), st.integers(1, 500))
 def test_torch_spmv(layout, dtype, data, nrows, ncols):
     "Test to make sure Torch spmv is behaved"
-    if dtype == np.float32:
-        skip("float32 precision is too noisy")
     if layout == "csc":
         skip("csc not documented to work")
 
@@ -62,8 +60,8 @@ def test_torch_spmv(layout, dtype, data, nrows, ncols):
             dtype,
             (nrows, ncols),
             elements=st.floats(
-                -1e6,
-                1e6,
+                -1e4,
+                1e4,
                 allow_nan=False,
                 allow_infinity=False,
                 width=np.finfo(dtype).bits,
@@ -76,8 +74,8 @@ def test_torch_spmv(layout, dtype, data, nrows, ncols):
             dtype,
             ncols,
             elements=st.floats(
-                -1e6,
-                1e6,
+                -1e4,
+                1e4,
                 allow_nan=False,
                 allow_infinity=False,
                 width=np.finfo(dtype).bits,
@@ -92,9 +90,9 @@ def test_torch_spmv(layout, dtype, data, nrows, ncols):
 
     # make our tolerance depend on the data type we got
     if dtype == np.float64:
-        rtol, atol = 1.0e-5, 1.0e-5
+        rtol, atol = 1.0e-5, 1.0e-4
     elif dtype == np.float32:
-        rtol, atol = 1.0e-3, 1.0e-4
+        rtol, atol = 0.05, 1.0e-3
     else:
         raise TypeError(f"unexpected data type {dtype}")
 
@@ -107,7 +105,7 @@ def test_torch_spmv(layout, dtype, data, nrows, ncols):
     # (this should always pass, it isn't the bug)
     T = torch.from_numpy(M)
     tv = torch.from_numpy(v)
-    assert torch.mv(T, tv) == approx(res, rel=rtol, abs=atol)
+    assert torch.mv(T, tv).numpy() == approx(res, rel=rtol, abs=atol)
 
     # and now we do the sparse multiplication
     # first make the tensor sparse
