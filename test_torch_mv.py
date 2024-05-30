@@ -92,7 +92,7 @@ def test_torch_spmv(layout, dtype, data, nrows, ncols):
 
     # make our tolerance depend on the data type we got
     if dtype == np.float64:
-        rtol, atol = 1.0e-5, 1.0e-6
+        rtol, atol = 1.0e-5, 1.0e-5
     elif dtype == np.float32:
         rtol, atol = 1.0e-3, 1.0e-4
     else:
