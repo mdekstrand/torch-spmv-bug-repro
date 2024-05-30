@@ -6,7 +6,6 @@ dependencies:
 - python=3.11
 - pip
 - numpy=1.26
-- scipy=1.13
 - pytorch=2.3
 - pytorch-mutex=*=cpu
 - pytest=8
