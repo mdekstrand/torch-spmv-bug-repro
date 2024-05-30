@@ -42,8 +42,7 @@ jobs:
 
       - name: Inspect environment
         run: |
-          python -VV
-          pip list
+          python collect_env.py
 
       - name: Run test
         run: |
