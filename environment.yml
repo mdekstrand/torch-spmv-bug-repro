@@ -7,6 +7,7 @@ dependencies:
 - pip
 - numpy=1.26
 - scipy=1.13
-- pytorch=2.3=*cpu*
+- pytorch=2.3
+- pytorch-mutex=*=cpu
 - pytest=8
 - hypothesis=6.103
