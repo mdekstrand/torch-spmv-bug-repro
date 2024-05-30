@@ -10,3 +10,9 @@ actually Torch's sparse matrix-vector that is incorrect.
 
 The test is run with both COO and CSR sparse matrices, to isolate the problem to
 one or the other.
+
+To set up the environment and run:
+
+    conda env create -n torch-bug -f environment.yml
+    conda activate torch-bug
+    python -m pytest -v
