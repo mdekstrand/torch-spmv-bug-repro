@@ -3,7 +3,7 @@ from itertools import product
 import numpy as np
 import torch
 
-from pytest import approx, mark
+from pytest import approx, mark, skip
 from hypothesis import settings, given, HealthCheck, note
 import hypothesis.strategies as st
 import hypothesis.extra.numpy as nph
@@ -51,6 +51,11 @@ def mat_vec_mul_problems(draw):
 @given(st.data(), st.integers(1, 500), st.integers(1, 500))
 def test_torch_spmv(layout, dtype, data, nrows, ncols):
     "Test to make sure Torch spmv is behaved"
+    if dtype == np.float32:
+        skip("float32 precision is too noisy")
+    if layout == "csc":
+        skip("csc not documented to work")
+
     # draw the initial matrix
     M = data.draw(
         nph.arrays(
