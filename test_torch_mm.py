@@ -1,3 +1,8 @@
+"""
+Exactly the same test as test_torch_mv, except with mm to demonstrate
+the problem lines in MV.
+"""
+
 from itertools import product
 
 import numpy as np
@@ -9,17 +14,13 @@ import hypothesis.strategies as st
 import hypothesis.extra.numpy as nph
 
 
-@mark.parametrize(
-    "layout,dtype", product(["coo", "csr", "csc"], [np.float32, np.float64])
-)
+@mark.parametrize("layout,dtype", product(["coo", "csr"], [np.float32, np.float64]))
 @settings(
     deadline=1000, max_examples=1000, suppress_health_check=[HealthCheck.too_slow]
 )
 @given(st.data(), st.integers(1, 500), st.integers(1, 500))
-def test_torch_spmv(layout, dtype, data, nrows, ncols):
-    "Test to make sure Torch spmv is behaved"
-    if layout == "csc":
-        skip("csc not documented to work")
+def test_torch_spmm(layout, dtype, data, nrows, ncols):
+    "Test to make sure Torch spmm is behaved"
     if dtype == np.float32:
         skip("float32 too noisy to reliably test")
 
@@ -89,6 +90,6 @@ def test_torch_spmv(layout, dtype, data, nrows, ncols):
             raise ValueError(f"unknown layout {layout}")
 
     # then multiply
-    tres = torch.mv(TS, tv)
+    tres = torch.mm(TS, tv.reshape(-1, 1)).reshape(-1)
     # and check the result
     assert tres.numpy() == approx(res, rel=rtol, abs=atol)
