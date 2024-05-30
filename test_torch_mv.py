@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import scipy.sparse as sps
 
-from pytest import approx
+from pytest import approx, mark
 from hypothesis import settings, given, HealthCheck, assume
 import hypothesis.strategies as st
 import hypothesis.extra.numpy as nph
@@ -10,9 +10,10 @@ import hypothesis.extra.numpy as nph
 from matgen import torch_sparse_from_scipy, coo_arrays
 
 
+@mark.parametrize('layout', ['coo', 'csr'])
 @settings(deadline=1000, max_examples=500, suppress_health_check=[HealthCheck.too_slow])
-@given(st.data(), coo_arrays(dtype="f8", shape=(1000, 1000)), st.sampled_from(["coo", "csr"]))
-def test_torch_spmv(data, M: sps.coo_array, layout):
+@given(st.data(), coo_arrays(dtype="f8", shape=(500, 500)))
+def test_torch_spmv(layout, data, M: sps.coo_array):
     "Test to make sure Torch spmv is behaved"
     nr, nc = M.shape
     v = data.draw(
