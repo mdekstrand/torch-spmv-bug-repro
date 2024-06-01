@@ -9,6 +9,7 @@ settings.register_profile(
 
 settings.register_profile(
     "crunch",
-    parent=settings.default,
+    deadline=1000,
     max_examples=10000,
+    suppress_health_check=[HealthCheck.too_slow],
 )
