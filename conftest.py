@@ -10,5 +10,5 @@ settings.register_profile(
 settings.register_profile(
     "crunch",
     parent=settings.default,
-    max_examples=5000,
+    max_examples=10000,
 )

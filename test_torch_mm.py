@@ -9,15 +9,12 @@ import numpy as np
 import torch
 
 from pytest import approx, mark, skip
-from hypothesis import settings, given, HealthCheck, note
+from hypothesis import given, note
 import hypothesis.strategies as st
 import hypothesis.extra.numpy as nph
 
 
 @mark.parametrize("layout,dtype", product(["coo", "csr"], [np.float32, np.float64]))
-@settings(
-    deadline=1000, max_examples=1000, suppress_health_check=[HealthCheck.too_slow]
-)
 @given(st.data(), st.integers(1, 500), st.integers(1, 500))
 def test_torch_spmm(layout, dtype, data, nrows, ncols):
     "Test to make sure Torch spmm is behaved"
